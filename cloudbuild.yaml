@@ -23,7 +23,7 @@ secrets:
 steps:
 
 #
-# Steps for building and testing vertx-template with Oracle DB
+# Steps for building and testing susom/database with Oracle DB
 #
 
 # Copying ojdbc7 dependency in GCB workspace
