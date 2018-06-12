@@ -130,3 +130,7 @@ steps:
          -Dpostgres.database.user=test -Dpostgres.database.password=test -P postgresql verify'"]
   env: ['APP_TEST_SERVER=postgres-app-test-server', 'POSTGRES_NET=stanford-postgres',
         'APP_TEST_IMAGE=gcr.io/cloud-builders/mvn', 'POSTGRES_SERVER=postgres-dbserver']
+
+# Copying from GCB workspace
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['cp', '/workspace/target/database-3.0-SNAPSHOT-javadoc.jar', 'gs://delete-oracle-jdbc-jar']
