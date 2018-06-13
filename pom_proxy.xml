@@ -42,12 +42,14 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <id>${env.MAVEN_ID}</id>
+      <name>Snapshot</name>
+      <url>http://${env.MAVEN_HOST}:${env.MAVEN_PORT}/repository/maven-snapshots</url>
     </snapshotRepository>
     <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      <id>${env.MAVEN_ID}</id>
+      <name>Releases</name>
+      <url>http://${env.MAVEN_HOST}:${env.MAVEN_PORT}/repository/maven-releases</url>
     </repository>
   </distributionManagement>
 
@@ -354,8 +356,7 @@
           <groupId>com.oracle</groupId>
           <artifactId>ojdbc7</artifactId>
           <version>12.1.0.2</version>
-          <scope>system</scope>
-          <systemPath>/workspace/ojdbc7.jar</systemPath>
+          <scope>test</scope>
         </dependency>
       </dependencies>
     </profile>
@@ -485,15 +486,17 @@
     </profile>
 
     <profile>
-      <id>packagecloud</id>
+      <id>${env.MAVEN_ID}</id>
       <distributionManagement>
         <snapshotRepository>
-          <id>packagecloud</id>
-          <url>packagecloud+https://packagecloud.io/garricko/travis</url>
+          <id>${env.MAVEN_ID}</id>
+          <name>Snapshot</name>
+          <url>http://${env.MAVEN_HOST}:${env.MAVEN_PORT}/repository/maven-snapshots</url>
         </snapshotRepository>
         <repository>
-          <id>packagecloud</id>
-          <url>packagecloud+https://packagecloud.io/garricko/travis</url>
+          <id>${env.MAVEN_ID}</id>
+          <name>Releases</name>
+          <url>http://${env.MAVEN_HOST}:${env.MAVEN_PORT}/repository/maven-releases</url>
         </repository>
       </distributionManagement>
     </profile>
