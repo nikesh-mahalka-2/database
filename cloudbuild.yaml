@@ -128,14 +128,14 @@ steps:
   args: ['-c', "docker run -e POSTGRES_SERVER -e PROXY_USERNAME -e PROXY_PASSWORD -e MAVEN_USERNAME -e MAVEN_PASSWORD \
          -e MAVEN_ID -e PROXY_HOST -e MAVEN_HOST -e MAVEN_PORT \
          -e POSTGRES_USER -e POSTGRES_PASSWORD -e POSTGRES_DB \
-	 --name $$APP_TEST_SERVER --net $$POSTGRES_NET \
+         --name $$APP_TEST_SERVER --net $$POSTGRES_NET \
          -v /workspace:/workspace --entrypoint 'bash' $$APP_TEST_IMAGE \
          -c 'cd /workspace; cp settings.xml ~/.m2/settings.xml; export TZ=America/Los_Angeles; \
          mvn -e -Dpostgres.database.url=jdbc:postgresql://$$POSTGRES_SERVER:5432/$$POSTGRES_DB \
          -Dpostgres.database.user=$$POSTGRES_USER -Dpostgres.database.password=$$POSTGRES_PASSWORD -P postgresql verify'"]
   env: ['APP_TEST_SERVER=postgres-app-test-server', 'POSTGRES_NET=stanford-postgres',
         'APP_TEST_IMAGE=gcr.io/cloud-builders/mvn', 'POSTGRES_SERVER=postgres-dbserver',
-	'POSTGRES_USER=test', 'POSTGRES_PASSWORD=test', 'POSTGRES_DB=test',
+        'POSTGRES_USER=test', 'POSTGRES_PASSWORD=test', 'POSTGRES_DB=test',
         'MAVEN_ID=nexus', 'PROXY_HOST=35.224.27.251', 'MAVEN_HOST=35.188.213.68', 'MAVEN_PORT=8081']
   secretEnv: ['PROXY_USERNAME', 'PROXY_PASSWORD', 'MAVEN_USERNAME', 'MAVEN_PASSWORD']
 
@@ -155,6 +155,6 @@ steps:
   #        mvn -DskipTests -Ppostgresql deploy; curl -sSL https://download.sourceclear.com/ci.sh | sh'"]
   env: ['APP_DEPLOY_SERVER=postgres-app-build-server', 'POSTGRES_NET=stanford-postgres',
         'APP_DEPLOY_IMAGE=gcr.io/cloud-builders/mvn', 'MAVEN_ID=nexus', 'PROXY_HOST=35.224.27.251',
-	'MAVEN_HOST=35.188.213.68', 'MAVEN_PORT=8081']
+        'MAVEN_HOST=35.188.213.68', 'MAVEN_PORT=8081']
   #secretEnv: ['SRCCLR_API_TOKEN', 'PROXY_USERNAME', 'PROXY_PASSWORD', 'MAVEN_USERNAME', 'MAVEN_PASSWORD']
   secretEnv: ['PROXY_USERNAME', 'PROXY_PASSWORD', 'MAVEN_USERNAME', 'MAVEN_PASSWORD']
