@@ -136,7 +136,7 @@ steps:
          -e POSTGRES_USER -e POSTGRES_PASSWORD -e POSTGRES_DB \
          --name $$APP_TEST_SERVER --net $$POSTGRES_NET \
          -v /workspace:/workspace --entrypoint 'bash' $$APP_TEST_IMAGE \
-         -c 'cd /workspace; cp settings.xml /root/.m2/settings.xml; export TZ=America/Los_Angeles; \
+         -c 'cd /workspace; export TZ=America/Los_Angeles; \
          mvn -e -Dpostgres.database.url=jdbc:postgresql://$$POSTGRES_SERVER:5432/$$POSTGRES_DB \
          -Dpostgres.database.user=$$POSTGRES_USER -Dpostgres.database.password=$$POSTGRES_PASSWORD -P postgresql verify'"]
   env: ['APP_TEST_SERVER=postgres-app-test-server', 'POSTGRES_NET=stanford-postgres',
