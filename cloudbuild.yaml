@@ -64,11 +64,14 @@ steps:
 
 # Running Integration Tests using APP test server
 - name: 'gcr.io/cloud-builders/docker'
+  volumes:
+  - name: 'm2'
+    path: '/mvn_local_repo'
   entrypoint: 'bash'
   args: ['-c', "docker run -e ORACLEDB_SERVER -e PROXY_USERNAME -e PROXY_PASSWORD -e MAVEN_USERNAME -e MAVEN_PASSWORD \
          -e MAVEN_ID -e PROXY_HOST -e MAVEN_HOST -e MAVEN_PORT \
          --name $$APP_TEST_SERVER --net $$ORACLEDB_NET \
-         -v /workspace:/workspace --entrypoint 'bash' $$APP_TEST_IMAGE -c 'cd /workspace; \
+         -v /workspace:/workspace -v /mvn_local_repo:/root/.m2 --entrypoint 'bash' $$APP_TEST_IMAGE -c 'cd /workspace; \
          cp settings.xml ~/.m2/settings.xml; ./run_oracle.test.sh'"]
   env: ['APP_TEST_SERVER=oracledb-app-test-server', 'ORACLEDB_NET=stanford-oracledb',
         'APP_TEST_IMAGE=gcr.io/cloud-builders/mvn', 'ORACLEDB_SERVER=oracle-dbserver',
@@ -77,12 +80,15 @@ steps:
 
 # Deploying using APP deploy server
 - name: 'gcr.io/cloud-builders/docker'
+  volumes:
+  - name: 'm2'
+    path: '/mvn_local_repo'
   entrypoint: 'bash'
   args: ['-c', "docker run -e PROXY_USERNAME -e PROXY_PASSWORD -e MAVEN_USERNAME -e MAVEN_PASSWORD \
          -e MAVEN_ID -e PROXY_HOST -e MAVEN_HOST -e MAVEN_PORT \
          --name $$APP_DEPLOY_SERVER --net $$ORACLEDB_NET \
-         -v /workspace:/workspace --entrypoint 'bash' $$APP_DEPLOY_IMAGE \
-         -c 'cd /workspace; cp settings.xml ~/.m2/settings.xml; mvn -Poracle12 -e -DskipTests deploy'"]
+         -v /workspace:/workspace -v /mvn_local_repo:/root/.m2 --entrypoint 'bash' $$APP_DEPLOY_IMAGE \
+         -c 'cd /workspace; mvn -Poracle12 -e -DskipTests deploy'"]
   #args: ['-c', "docker run -e PROXY_USERNAME -e PROXY_PASSWORD -e MAVEN_USERNAME -e MAVEN_PASSWORD \
   #       -e MAVEN_ID -e PROXY_HOST -e MAVEN_HOST -e MAVEN_PORT -e SRCCLR_API_TOKEN \
   #       --name $$APP_DEPLOY_SERVER --net $$ORACLEDB_NET \
@@ -130,7 +136,7 @@ steps:
          -e POSTGRES_USER -e POSTGRES_PASSWORD -e POSTGRES_DB \
          --name $$APP_TEST_SERVER --net $$POSTGRES_NET \
          -v /workspace:/workspace --entrypoint 'bash' $$APP_TEST_IMAGE \
-         -c 'cd /workspace; cp settings.xml ~/.m2/settings.xml; export TZ=America/Los_Angeles; \
+         -c 'cd /workspace; cp settings.xml /root/.m2/settings.xml; export TZ=America/Los_Angeles; \
          mvn -e -Dpostgres.database.url=jdbc:postgresql://$$POSTGRES_SERVER:5432/$$POSTGRES_DB \
          -Dpostgres.database.user=$$POSTGRES_USER -Dpostgres.database.password=$$POSTGRES_PASSWORD -P postgresql verify'"]
   env: ['APP_TEST_SERVER=postgres-app-test-server', 'POSTGRES_NET=stanford-postgres',
@@ -141,20 +147,25 @@ steps:
 
 # Deploying using APP deploy server
 - name: 'gcr.io/cloud-builders/docker'
+  volumes:
+  - name: 'm2'
+    path: '/mvn_local_repo'
   entrypoint: 'bash'
   args: ['-c', "docker run -e PROXY_USERNAME -e PROXY_PASSWORD -e MAVEN_USERNAME -e MAVEN_PASSWORD \
          -e MAVEN_ID -e PROXY_HOST -e MAVEN_HOST -e MAVEN_PORT \
          --name $$APP_DEPLOY_SERVER --net $$POSTGRES_NET \
-         -v /workspace:/workspace --entrypoint 'bash' $$APP_DEPLOY_IMAGE \
-         -c 'cd /workspace; cp settings.xml ~/.m2/settings.xml; mvn -DskipTests -Ppostgresql deploy'"]
+         -v /workspace:/workspace -v /mvn_local_repo:/root/.m2 --entrypoint 'bash' $$APP_DEPLOY_IMAGE \
+         -c 'cd /workspace; mvn -DskipTests -Ppostgresql deploy'"]
   #args: ['-c', "docker run -e PROXY_USERNAME -e PROXY_PASSWORD -e MAVEN_USERNAME -e MAVEN_PASSWORD \
   #       -e MAVEN_ID -e PROXY_HOST -e MAVEN_HOST -e MAVEN_PORT -e SRCCLR_API_TOKEN \
   #       --name $$APP_DEPLOY_SERVER --net $$POSTGRES_NET \
-  #       -v /workspace:/workspace --entrypoint 'bash' $$APP_DEPLOY_IMAGE \
-  #       -c 'apt-get update; apt-get install curl -y; cd /workspace; cp settings.xml ~/.m2/settings.xml; \
+  #       -v /workspace:/workspace -v /mvn_local_repo:~/.m2 --entrypoint 'bash' $$APP_DEPLOY_IMAGE \
+  #       -c 'apt-get update; apt-get install curl -y; cd /workspace; \
   #        mvn -DskipTests -Ppostgresql deploy; curl -sSL https://download.sourceclear.com/ci.sh | sh'"]
   env: ['APP_DEPLOY_SERVER=postgres-app-build-server', 'POSTGRES_NET=stanford-postgres',
         'APP_DEPLOY_IMAGE=gcr.io/cloud-builders/mvn', 'MAVEN_ID=nexus', 'PROXY_HOST=35.224.27.251',
         'MAVEN_HOST=35.188.213.68', 'MAVEN_PORT=8081']
   #secretEnv: ['SRCCLR_API_TOKEN', 'PROXY_USERNAME', 'PROXY_PASSWORD', 'MAVEN_USERNAME', 'MAVEN_PASSWORD']
   secretEnv: ['PROXY_USERNAME', 'PROXY_PASSWORD', 'MAVEN_USERNAME', 'MAVEN_PASSWORD']
+
+timeout: 1800s
