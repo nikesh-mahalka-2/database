@@ -92,8 +92,8 @@ steps:
   #args: ['-c', "docker run -e PROXY_USERNAME -e PROXY_PASSWORD -e MAVEN_USERNAME -e MAVEN_PASSWORD \
   #       -e MAVEN_ID -e PROXY_HOST -e MAVEN_HOST -e MAVEN_PORT -e SRCCLR_API_TOKEN \
   #       --name $$APP_DEPLOY_SERVER --net $$ORACLEDB_NET \
-  #       -v /workspace:/workspace --entrypoint 'bash' $$APP_DEPLOY_IMAGE \
-  #       -c 'apt-get update; apt-get install curl -y; cd /workspace; cp settings.xml ~/.m2/settings.xml; \
+  #       -v /workspace:/workspace -v /mvn_local_repo:/root/.m2 --entrypoint 'bash' $$APP_DEPLOY_IMAGE \
+  #       -c 'apt-get update; apt-get install curl -y; cd /workspace; \
   #       mvn -Poracle12 -e -DskipTests deploy; curl -sSL https://download.sourceclear.com/ci.sh | sh;'"]
   env: ['APP_DEPLOY_SERVER=oracledb-app-deploy-server', 'ORACLEDB_NET=stanford-oracledb',
         'APP_DEPLOY_IMAGE=gcr.io/cloud-builders/mvn', 'MAVEN_ID=nexus', 'PROXY_HOST=35.224.27.251',
@@ -159,7 +159,7 @@ steps:
   #args: ['-c', "docker run -e PROXY_USERNAME -e PROXY_PASSWORD -e MAVEN_USERNAME -e MAVEN_PASSWORD \
   #       -e MAVEN_ID -e PROXY_HOST -e MAVEN_HOST -e MAVEN_PORT -e SRCCLR_API_TOKEN \
   #       --name $$APP_DEPLOY_SERVER --net $$POSTGRES_NET \
-  #       -v /workspace:/workspace -v /mvn_local_repo:~/.m2 --entrypoint 'bash' $$APP_DEPLOY_IMAGE \
+  #       -v /workspace:/workspace -v /mvn_local_repo:/root/.m2 --entrypoint 'bash' $$APP_DEPLOY_IMAGE \
   #       -c 'apt-get update; apt-get install curl -y; cd /workspace; \
   #        mvn -DskipTests -Ppostgresql deploy; curl -sSL https://download.sourceclear.com/ci.sh | sh'"]
   env: ['APP_DEPLOY_SERVER=postgres-app-build-server', 'POSTGRES_NET=stanford-postgres',
