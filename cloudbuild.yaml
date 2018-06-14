@@ -2,9 +2,9 @@
 # cloudbuild.yaml for building and testing susom/database repo with different databases
 #
 
-# Google Cloud KMS KeyRing and CryptoKey are created for encrypting credentials of SourceClear, Docker Store, Proxy and Maven Repo
+# Google Cloud KMS KeyRing and CryptoKey are created for encrypting credentials of SourceClear, Docker Store,Proxy and Maven Repo
 # Container Builder service account is granted access to the CryptoKey.
-# Run the following command in shell or terminal window to encrpt SourceClear and Docker Store credentials
+# Run the following command in shell or terminal window to encrpt SourceClear, Docker Store,Proxy and Maven Repo credentials
 # MY_SECRET=<enter-your-credential>
 # echo -n $MY_SECRET | gcloud kms encrypt --plaintext-file=- --ciphertext-file=- \
 # --location=global --keyring=[KEYRING-NAME] --key=[KEY-NAME] | base64
